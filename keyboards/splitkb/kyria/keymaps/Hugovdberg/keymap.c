@@ -29,6 +29,29 @@ enum layers {
     _NUM
 };
 
+enum tap_dance {
+    _TD_QUOTE = 0,
+    _TD_GRAVE,
+    _TD_TILDE,
+    _TD_CIRCUMFLEX,
+};
+
+typedef enum {
+    TD_NONE,
+    TD_UNKNOWN,
+    TD_SINGLE_TAP,
+    TD_SINGLE_HOLD,
+    TD_DOUBLE_TAP,
+    TD_DOUBLE_HOLD,
+    TD_DOUBLE_SINGLE_TAP, // Send two single taps
+    TD_TRIPLE_TAP,
+    TD_TRIPLE_HOLD
+} td_state_t;
+
+// enum custom_keycodes {
+//     APOSTROPHE = SAFE_RANGE,
+// };
+
 
 // Aliases for readability
 #define FULL_MAKS DF(_FULL_MAKS)
@@ -47,6 +70,11 @@ enum layers {
 #define CTL_QUOT  MT(MOD_RCTL, KC_QUOTE)
 #define CTL_MINS  MT(MOD_RCTL, KC_MINUS)
 #define ALT_ENT   MT(MOD_LALT, KC_ENT)
+// Note: LAlt/Enter (ALT_ENT) is not the same thing as the keyboard shortcut Alt+Enter.
+// The notation `mod/tap` denotes a key that activates the modifier `mod` when held down, and
+// produces the key `tap` when tapped (i.e. pressed and released).
+
+
 
 #define GUI_H     MT(MOD_LGUI, KC_H)    // Left GUI when held, H when tapped
 #define ALT_I     MT(MOD_LALT, KC_I)    // Left Alt when held, I when tapped
@@ -60,6 +88,11 @@ enum layers {
 
 #define APP_MENU  MT(MOD_RALT, KC_APP)  // Right Alt when held, Menu when tapped
 
+#define TD_QUOTE  TD(_TD_QUOTE)
+#define TD_GRAVE  TD(_TD_GRAVE)
+#define TD_TILDE  TD(_TD_TILDE)
+#define TD_CIRC   TD(_TD_CIRCUMFLEX)
+
 #define ESC_MED   LT(_MEDIA, KC_ESC)
 #define SPC_NAV   LT(_NAV, KC_SPC)
 #define TAB_MOUSE LT(_MOUSE, KC_TAB)
@@ -67,9 +100,52 @@ enum layers {
 #define BSPC_NUM  LT(_NUM, KC_BSPC)
 #define DEL_FUNC  LT(_FUNCTION, KC_DEL)
 
-// Note: LAlt/Enter (ALT_ENT) is not the same thing as the keyboard shortcut Alt+Enter.
-// The notation `mod/tap` denotes a key that activates the modifier `mod` when held down, and
-// produces the key `tap` when tapped (i.e. pressed and released).
+
+td_state_t cur_dance(tap_dance_state_t *state) {
+    if (state->count == 1) {
+        if (state->interrupted || !state->pressed) return TD_SINGLE_TAP;
+        else return TD_SINGLE_HOLD;
+    } else if (state->count == 2) {
+        if (state->interrupted) return TD_DOUBLE_SINGLE_TAP;
+        else if (state->pressed) return TD_DOUBLE_HOLD;
+        else return TD_DOUBLE_TAP;
+    }
+
+    if (state->count == 3) {
+        if (state->interrupted || !state->pressed) return TD_TRIPLE_TAP;
+        else return TD_TRIPLE_HOLD;
+    } else return TD_UNKNOWN;
+}
+
+void td_deadkey_finished(tap_dance_state_t *state, void *user_data, uint16_t keycode) {
+    switch (cur_dance(state)) {
+        case TD_SINGLE_TAP:
+            tap_code16(keycode);
+            tap_code16(KC_SPC);
+            break;
+
+        case TD_SINGLE_HOLD:
+            tap_code16(keycode);
+            break;
+
+        default:
+            break;
+    }
+}
+#define TD_DEADKEY(func_name, keycode) void func_name(tap_dance_state_t *state, void *user_data) {return td_deadkey_finished(state, user_data, keycode);}
+
+TD_DEADKEY(td_quote_finished, KC_QUOTE);
+TD_DEADKEY(td_grave_finished, KC_GRAVE);
+TD_DEADKEY(td_tilde_finished, KC_TILDE);
+TD_DEADKEY(td_circumflex_finished, KC_CIRCUMFLEX);
+
+tap_dance_action_t tap_dance_actions[] = {
+    [_TD_QUOTE]  = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_quote_finished, NULL),
+    [_TD_GRAVE]  = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_grave_finished, NULL),
+    [_TD_TILDE]  = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_tilde_finished, NULL),
+    [_TD_CIRCUMFLEX]  = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_circumflex_finished, NULL),
+};
+
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -88,7 +164,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_FULL_MAKS] = LAYOUT(
-     KC_LALT, KC_Q ,  KC_Y,  KC_O  ,  KC_U  , KC_QUOTE,                                            KC_COLN ,   KC_C  ,  KC_L , KC_P , KC_V , KC_X,
+     KC_LALT, KC_Q ,  KC_Y,  KC_O  ,  KC_U  , TD_QUOTE,                                           KC_COLN ,   KC_C  ,  KC_L , KC_P , KC_V , KC_X,
      KC_NO  , GUI_H, ALT_I, CTRL_E , SHFT_A , KC_COMM ,                                             KC_D   ,  SHFT_S , CTRL_T, ALT_N, GUI_R, KC_W,
      KC_NO  , KC_K ,  KC_J, KC_UNDS, KC_DOT , KC_SCLN , KC_SLSH, KC_CAPS  ,      FKEYS , KC_BSLS ,  KC_F   ,   KC_G  ,  KC_M , KC_B , KC_Z , KC_EQL,
                              ADJUST, KC_LGUI, ESC_MED , SPC_NAV, TAB_MOUSE,     ENT_SYM, BSPC_NUM, DEL_FUNC, APP_MENU, KC_APP
@@ -235,7 +311,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_NUM] = LAYOUT(
       KC_NO , KC_LBRC,  KC_7  ,  KC_8  ,  KC_9  , KC_RBRC,                                     _______, _______, _______, _______, _______, _______,
       KC_NO , KC_SCLN,  KC_4  ,  KC_5  ,  KC_6  , KC_EQL ,                                     _______, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
-      KC_NO , KC_GRV ,  KC_1  ,  KC_2  ,  KC_3  , KC_NUBS, KC_LCBR, _______, _______, KC_RCBR, _______, _______, _______, _______, _______, _______,
+      KC_NO ,TD_GRAVE,  KC_1  ,  KC_2  ,  KC_3  , KC_NUBS, KC_LCBR, _______, _______, KC_RCBR, _______, _______, _______, _______, _______, _______,
                                 _______, _______, KC_DOT ,  KC_0  , KC_MINS, _______, _______, _______, _______, _______
     ),
 
@@ -256,8 +332,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
     [_SYM] = LAYOUT(
       KC_NO , KC_LCBR, KC_AMPR, KC_ASTR, KC_LPRN, KC_RCBR,                                     _______, _______, _______, _______, _______, _______,
-      KC_NO , KC_SCLN, KC_DLR , KC_PERC, KC_CIRC, KC_EQL ,                                     _______, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
-      KC_NO , KC_TILD, KC_EXLM,  KC_AT , KC_HASH, KC_PIPE, KC_LCBR, _______, _______, KC_RCBR, _______, _______, _______, _______, _______, _______,
+      KC_NO , KC_COLN, KC_DLR , KC_PERC, TD_CIRC, KC_PLUS,                                     _______, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
+      KC_NO ,TD_TILDE, KC_EXLM,  KC_AT , KC_HASH, KC_PIPE, KC_LCBR, _______, _______, KC_RCBR, _______, _______, _______, _______, _______, _______,
                                 _______, _______, KC_LPRN, KC_RPRN, KC_UNDS, _______, _______, _______, _______, _______
     ),
 
