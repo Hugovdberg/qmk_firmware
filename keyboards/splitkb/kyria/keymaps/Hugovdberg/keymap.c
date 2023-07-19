@@ -18,7 +18,7 @@
 enum layers {
     _FULL_MAKS = 0,
     _QWERTY,
-    _DVORAK,
+    _GAMING,
     _COLEMAK_DH,
     _NAV,
     _SYM,
@@ -57,7 +57,7 @@ typedef enum {
 #define FULL_MAKS DF(_FULL_MAKS)
 #define QWERTY    DF(_QWERTY)
 #define COLEMAK   DF(_COLEMAK_DH)
-#define DVORAK    DF(_DVORAK)
+#define DVORAK    DF(_GAMING)
 
 #define SYM       MO(_SYM)
 #define NAV       MO(_NAV)
@@ -74,7 +74,12 @@ typedef enum {
 // The notation `mod/tap` denotes a key that activates the modifier `mod` when held down, and
 // produces the key `tap` when tapped (i.e. pressed and released).
 
-
+#define KC_COPY     LCTL(KC_C)
+#define KC_CUT      LCTL(KC_X)
+#define KC_PSTE     LCTL(KC_V)
+#define KC_UNDO     LCTL(KC_Z)
+#define KC_REDO     LCTL(LSFT(KC_Z))
+#define KC_REDO_Y   LCTL(KC_Y)
 
 #define GUI_H     MT(MOD_LGUI, KC_H)    // Left GUI when held, H when tapped
 #define ALT_I     MT(MOD_LALT, KC_I)    // Left Alt when held, I when tapped
@@ -165,7 +170,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
     [_FULL_MAKS] = LAYOUT(
      KC_LALT, KC_Q ,  KC_Y,  KC_O  ,  KC_U  , TD_QUOTE,                                           KC_COLN ,   KC_C  ,  KC_L , KC_P , KC_V , KC_X,
-     KC_NO  , GUI_H, ALT_I, CTRL_E , SHFT_A , KC_COMM ,                                             KC_D   ,  SHFT_S , CTRL_T, ALT_N, GUI_R, KC_W,
+     KC_LSFT, GUI_H, ALT_I, CTRL_E , SHFT_A , KC_COMM ,                                             KC_D   ,  SHFT_S , CTRL_T, ALT_N, GUI_R, KC_W,
      KC_NO  , KC_K ,  KC_J, KC_UNDS, KC_DOT , KC_SCLN , KC_SLSH, KC_CAPS  ,      FKEYS , KC_BSLS ,  KC_F   ,   KC_G  ,  KC_M , KC_B , KC_Z , KC_EQL,
                              ADJUST, KC_LGUI, ESC_MED , SPC_NAV, TAB_MOUSE,     ENT_SYM, BSPC_NUM, DEL_FUNC, APP_MENU, KC_APP
     ),
@@ -204,11 +209,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        |      |      | Enter|      |      |  |      |      |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
-    [_DVORAK] = LAYOUT(
-     KC_TAB  ,KC_QUOTE,KC_COMM,  KC_DOT,   KC_P ,   KC_Y ,                                        KC_F,   KC_G ,  KC_C ,   KC_R ,  KC_L , KC_BSPC,
-     CTL_ESC , KC_A ,  KC_O   ,  KC_E  ,   KC_U ,   KC_I ,                                        KC_D,   KC_H ,  KC_T ,   KC_N ,  KC_S , CTL_MINS,
-     KC_LSFT ,KC_SCLN, KC_Q   ,  KC_J  ,   KC_K ,   KC_X , KC_LBRC,KC_CAPS,     FKEYS  , KC_RBRC, KC_B,   KC_M ,  KC_W ,   KC_V ,  KC_Z , KC_RSFT,
-                                 ADJUST, KC_LGUI, ALT_ENT, KC_SPC , NAV   ,     SYM    , KC_SPC ,KC_RALT, KC_RGUI, KC_APP
+    [_GAMING] = LAYOUT(
+     KC_TAB  ,KC_TAB ,  KC_Q  ,  KC_W  ,   KC_E ,   KC_R ,                                         KC_T  ,   KC_Y ,  KC_U ,   KC_I ,  KC_O , KC_P,
+     CTL_ESC ,CTL_ESC,  KC_A  ,  KC_S  ,   KC_D ,   KC_F ,                                         KC_G  ,   KC_H ,  KC_J ,   KC_K ,  KC_L , KC_SCLN,
+     KC_LSFT ,KC_LSFT,  KC_Z  ,  KC_X  ,   KC_C ,   KC_V , KC_LBRC,KC_CAPS,     FKEYS  , KC_RBRC,  KC_B  ,   KC_N ,  KC_M , KC_COMM, KC_DOT, KC_SLSH,
+                                 ADJUST, KC_LGUI, ALT_ENT, KC_SPC , NAV   ,     ENT_SYM,BSPC_NUM,DEL_FUNC, KC_RGUI, KC_APP
     ),
 
 /*
@@ -247,7 +252,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_NAV] = LAYOUT(
-      _______, _______, _______, _______, _______, _______,                                      KC_NO , KC_PSTE, KC_COPY, KC_CUT , KC_UNDO,  KC_DEL,
+      _______, _______, _______, _______, _______, _______,                                     KC_REDO, KC_PSTE, KC_COPY, KC_CUT , KC_UNDO,  KC_REDO_Y,
       _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, _______,                                     KC_CAPS, KC_LEFT, KC_DOWN,  KC_UP , KC_RGHT,  KC_NO ,
       _______, _______, _______, _______, _______, _______, _______, KC_SCRL, _______, _______, KC_INS , KC_HOME, KC_PGDN, KC_PGUP, KC_END , KC_PSCR,
                                  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
@@ -268,9 +273,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_MOUSE] = LAYOUT(
-      _______, _______, _______, _______, _______, _______,                                         KC_NO ,   KC_PSTE   ,   KC_COPY   ,   KC_CUT  ,    KC_UNDO   , KC_NO ,
-      _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, _______,                                         KC_NO , KC_MS_LEFT  , KC_MS_DOWN  , KC_MS_UP  , KC_MS_RIGHT  , KC_NO ,
-      _______, _______, _______, _______, _______, _______, _______, _______,    _______, _______,  KC_NO ,KC_MS_WH_LEFT,KC_MS_WH_DOWN,KC_MS_WH_UP,KC_MS_WH_RIGHT, KC_NO ,
+      _______, _______, _______, _______, _______, _______,                                        KC_REDO,   KC_PSTE   ,   KC_COPY   ,  KC_CUT   ,   KC_UNDO    ,KC_REDO_Y,
+      _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, _______,                                         KC_NO , KC_MS_LEFT  , KC_MS_DOWN  , KC_MS_UP  , KC_MS_RIGHT  ,  KC_NO  ,
+      _______, _______, _______, _______, _______, _______, _______, _______,    _______, _______,  KC_NO ,KC_MS_WH_LEFT,KC_MS_WH_DOWN,KC_MS_WH_UP,KC_MS_WH_RIGHT,  KC_NO  ,
                                  _______, _______, _______, _______, _______,    KC_BTN3, KC_BTN1, KC_BTN2,   _______   ,    _______
     ),
 
@@ -288,9 +293,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_MEDIA] = LAYOUT(
-      _______, _______, _______, _______, _______, _______,                                      KC_NO , KC_PSTE, KC_COPY, KC_CUT , KC_UNDO, KC_NO ,
-      _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, _______,                                      KC_NO , KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT, KC_NO ,
-      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,  KC_NO , KC_HOME, KC_PGDN, KC_PGUP, KC_END , KC_NO ,
+      _______, _______, _______, _______, _______, _______,                                     KC_REDO, KC_PSTE, KC_COPY, KC_CUT , KC_UNDO,KC_REDO_Y,
+      _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, _______,                                      KC_NO , KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT,  KC_NO  ,
+      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,  KC_NO , KC_HOME, KC_PGDN, KC_PGUP, KC_END ,  KC_NO  ,
                                  _______, _______, _______, _______, _______, KC_MSTP, KC_MPLY, KC_MUTE, _______, _______
     ),
 
@@ -433,8 +438,8 @@ bool oled_task_user(void) {
             case _QWERTY:
                 oled_write_P(PSTR("QWERTY\n"), false);
                 break;
-            case _DVORAK:
-                oled_write_P(PSTR("Dvorak\n"), false);
+            case _GAMING:
+                oled_write_P(PSTR("Gaming\n"), false);
                 break;
             case _COLEMAK_DH:
                 oled_write_P(PSTR("Colemak-DH\n"), false);
