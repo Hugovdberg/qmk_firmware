@@ -6,3 +6,4 @@ RGBLIGHT_ENABLE = yes      # Enable keyboard RGB underglow
 MOUSEKEY_ENABLE = yes      # Mouse keys
 TAP_DANCE_ENABLE = yes
 CONVERT_TO=elite_pi
+REPEAT_KEY_ENABLE = yes

@@ -34,3 +34,7 @@
 #    	define RGBLIGHT_LIMIT_VAL 150
 #    endif
 #endif
+
+// One-shot key configuration
+#define ONESHOT_TAP_TOGGLE 3  /* Number of taps for the one shot key to toggle */
+#define ONESHOT_TIMEOUT 5000  /* Time (in ms) before the one shot key is released */

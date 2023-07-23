@@ -17,16 +17,24 @@
 
 enum layers {
     _FULL_MAKS = 0,
-    _QWERTY,
     _GAMING,
-    _COLEMAK_DH,
+    _IKZEI,
     _NAV,
     _SYM,
     _FUNCTION,
     _ADJUST,
     _MEDIA,
     _MOUSE,
-    _NUM
+    _NUM,
+    _SYM2,
+    _NUMPAD,
+    _FUNCTION2,
+    _NAV2,
+    _BUTTON
+};
+
+enum custom_keycodes {
+    DEF_LYR = SAFE_RANGE,
 };
 
 enum tap_dance {
@@ -54,10 +62,8 @@ typedef enum {
 
 
 // Aliases for readability
-#define FULL_MAKS DF(_FULL_MAKS)
-#define QWERTY    DF(_QWERTY)
-#define COLEMAK   DF(_COLEMAK_DH)
-#define DVORAK    DF(_GAMING)
+#define IKZEI     DF(_IKZEI)
+#define GAMING    DF(_GAMING)
 
 #define SYM       MO(_SYM)
 #define NAV       MO(_NAV)
@@ -65,6 +71,13 @@ typedef enum {
 #define ADJUST    MO(_ADJUST)
 #define MEDIA     MO(_MEDIA)
 #define MOUSE     MO(_MOUSE)
+
+#define IKZEI_B   TO(_IKZEI)
+#define SYM2      TO(_SYM2)
+#define NUM2      TO(_NUMPAD)
+#define FKEYS2    TO(_FUNCTION2)
+#define MEDIA2    TO(_NAV2)
+#define BUTTON    OSL(_BUTTON)
 
 #define CTL_ESC   MT(MOD_LCTL, KC_ESC)
 #define CTL_QUOT  MT(MOD_RCTL, KC_QUOTE)
@@ -81,6 +94,10 @@ typedef enum {
 #define KC_REDO     LCTL(LSFT(KC_Z))
 #define KC_REDO_Y   LCTL(KC_Y)
 
+#define ALT_E     MT(MOD_LALT, KC_E)    // Left Alt when held, E when tapped
+#define GUI_I     MT(MOD_LGUI, KC_I)    // Left GUI when held, I when tapped
+#define GUI_D     MT(MOD_LGUI, KC_D)    // Left GUI when held, D when tapped
+
 #define GUI_H     MT(MOD_LGUI, KC_H)    // Left GUI when held, H when tapped
 #define ALT_I     MT(MOD_LALT, KC_I)    // Left Alt when held, I when tapped
 #define CTRL_E    MT(MOD_LCTL, KC_E)    // Left Ctrl when held, E when tapped
@@ -92,6 +109,15 @@ typedef enum {
 #define GUI_R     MT(MOD_LGUI, KC_R)    // Right GUI when held, R when tapped
 
 #define APP_MENU  MT(MOD_RALT, KC_APP)  // Right Alt when held, Menu when tapped
+
+#define OS_LSFT   OSM(MOD_LSFT)
+#define OS_LCTL   OSM(MOD_LCTL)
+#define OS_LALT   OSM(MOD_LALT)
+#define OS_LGUI   OSM(MOD_LGUI)
+#define OS_RSFT   OSM(MOD_RSFT)
+#define OS_RCTL   OSM(MOD_RCTL)
+#define OS_RALT   OSM(MOD_RALT)
+#define OS_RGUI   OSM(MOD_RGUI)
 
 #define TD_QUOTE  TD(_TD_QUOTE)
 #define TD_GRAVE  TD(_TD_GRAVE)
@@ -106,7 +132,7 @@ typedef enum {
 #define DEL_FUNC  LT(_FUNCTION, KC_DEL)
 
 
-td_state_t cur_dance(tap_dance_state_t *state) {
+td_state_t cur_dance_step(tap_dance_state_t *state) {
     if (state->count == 1) {
         if (state->interrupted || !state->pressed) return TD_SINGLE_TAP;
         else return TD_SINGLE_HOLD;
@@ -123,13 +149,19 @@ td_state_t cur_dance(tap_dance_state_t *state) {
 }
 
 void td_deadkey_finished(tap_dance_state_t *state, void *user_data, uint16_t keycode) {
-    switch (cur_dance(state)) {
+    switch (cur_dance_step(state)) {
         case TD_SINGLE_TAP:
             tap_code16(keycode);
             tap_code16(KC_SPC);
             break;
 
         case TD_SINGLE_HOLD:
+            tap_code16(keycode);
+            break;
+
+        case TD_DOUBLE_TAP:
+        case TD_DOUBLE_SINGLE_TAP:
+            tap_code16(keycode);
             tap_code16(keycode);
             break;
 
@@ -155,48 +187,28 @@ tap_dance_action_t tap_dance_actions[] = {
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /*
- * Base Layer: Full maks minimo
+ * Base layer: "Ik zei"
  *
- * ,-------------------------------------------.                              ,-----------------------------------------.
- * |  LAlt  |   Q  |   Y  |   O  |   U  |   '  |                              |   :  |   C  |   L  |   P  |   V  |   X  |
- * |--------+------+------+------+------+------|                              |------+------+------+------+------+------|
- * | LShift |   H  |   I  |   E  |   A  |   ,  |                              |   D  |   S  |   T  |   N  |   R  |   W  |
- * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+------|
- * |        |   K  |   J  |   _  |   .  |   ;  |  /   |CapsLk|  |F-keys|   \  |   F  |   G  |   M  |   B  |   Z  |   =  |
- * `----------------------+------+------+------+------+------|  |------+------+------+------+------+--------------------'
- *                        |Adjust| LGUI | LAlt/| Space| Nav  |  | Sym/ | Num/ | Fun/ | Menu/| Menu |
- *                        |      |      | Enter|      |      |  |  Ent | Bksp |  Del | AltGr|      |
- *                        `----------------------------------'  `----------------------------------'
+ * ,-------------------------------------------.                              ,--------------------------------------------.
+ * |   Esc  |   ;  |   h  |   '  |   .  |   ,  |                              |   b  |   v  |   l   |   g  |   j  |  BSPC  |
+ * |--------+------+------+------+------+------|                              |------+------+-------+------+------+--------|
+ * |   Alt  |   a  |   s  |   e  |   i  |   x  |                              |   p  |   d  |   n   |   t  |   r  | Enter  |
+ * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+-------+------+------+--------|
+ * |   Gui  |   u  |   f  |   y  |   o  |   q  |      |CapsLk|  |      |      |   z  |   k  |   w   |   m  |   c  |        |
+ * `----------------------+------+------+------+------+------|  |------+------+------+------+-------+----------------------'
+ *                        | VOL/ |      |      |      |      |  |      |      |      |      |PGUPDN/|
+ *                        |ADJUST| BUTN |  REP | SPC  | LSFT |  | RCTL |  L2  | AREP |      |  MENU |
+ *                        `----------------------------------'  `-----------------------------------'
  */
-    [_FULL_MAKS] = LAYOUT(
-     KC_LALT, KC_Q ,  KC_Y,  KC_O  ,  KC_U  , TD_QUOTE,                                           KC_COLN ,   KC_C  ,  KC_L , KC_P , KC_V , KC_X,
-     KC_LSFT, GUI_H, ALT_I, CTRL_E , SHFT_A , KC_COMM ,                                             KC_D   ,  SHFT_S , CTRL_T, ALT_N, GUI_R, KC_W,
-     KC_NO  , KC_K ,  KC_J, KC_UNDS, KC_DOT , KC_SCLN , KC_SLSH, KC_CAPS  ,      FKEYS , KC_BSLS ,  KC_F   ,   KC_G  ,  KC_M , KC_B , KC_Z , KC_EQL,
-                             ADJUST, KC_LGUI, ESC_MED , SPC_NAV, TAB_MOUSE,     ENT_SYM, BSPC_NUM, DEL_FUNC, APP_MENU, KC_APP
-    ),
-/*
- * Base Layer: QWERTY
- *
- * ,-------------------------------------------.                              ,-------------------------------------------.
- * |  Tab   |   Q  |   W  |   E  |   R  |   T  |                              |   Y  |   U  |   I  |   O  |   P  |  Bksp  |
- * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |Ctrl/Esc|   A  |   S  |   D  |   F  |   G  |                              |   H  |   J  |   K  |   L  | ;  : |Ctrl/' "|
- * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * | LShift |   Z  |   X  |   C  |   V  |   B  | [ {  |CapsLk|  |F-keys|  ] } |   N  |   M  | ,  < | . >  | /  ? | RShift |
- * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
- *                        |Adjust| LGUI | LAlt/| Space| Nav  |  | Sym  | Space| AltGr| RGUI | Menu |
- *                        |      |      | Enter|      |      |  |      |      |      |      |      |
- *                        `----------------------------------'  `----------------------------------'
- */
-    [_QWERTY] = LAYOUT(
-     KC_TAB  , KC_Q ,  KC_W   ,  KC_E  ,   KC_R ,   KC_T ,                                        KC_Y,   KC_U ,  KC_I ,   KC_O ,  KC_P , KC_BSPC,
-     CTL_ESC , KC_A ,  KC_S   ,  KC_D  ,   KC_F ,   KC_G ,                                        KC_H,   KC_J ,  KC_K ,   KC_L ,KC_SCLN,CTL_QUOT,
-     KC_LSFT , KC_Z ,  KC_X   ,  KC_C  ,   KC_V ,   KC_B , KC_LBRC,KC_CAPS,     FKEYS  , KC_RBRC, KC_N,   KC_M ,KC_COMM, KC_DOT ,KC_SLSH, KC_RSFT,
-                                ADJUST , KC_LGUI, ALT_ENT, KC_SPC , NAV   ,     SYM    , KC_SPC ,KC_RALT, KC_RGUI, KC_APP
+    [_IKZEI] = LAYOUT(
+    KC_ESCAPE, KC_SCLN,  KC_H  ,TD_QUOTE, KC_DOT , KC_COMM,                                      KC_B  ,  KC_V  ,  KC_L  ,  KC_G  ,  KC_J  , KC_BSPC,
+      OS_LALT,  KC_A  ,  KC_S  ,  KC_E  ,  KC_I ,   KC_X  ,                                      KC_P  ,  KC_D  ,  KC_N  ,  KC_T  ,  KC_R  , KC_ENT,
+      OS_LGUI,  KC_U  ,  KC_F  ,  KC_Y  ,  KC_O  ,  KC_Q  , XXXXXXX, KC_CAPS, XXXXXXX, XXXXXXX,  KC_Z  ,  KC_K  ,  KC_W  ,  KC_M  ,  KC_C  , XXXXXXX,
+                                 ADJUST , BUTTON , QK_REP , KC_SPC , OS_LSFT, OS_RCTL,  SYM2  , QK_AREP, KC_APP ,  HOME
     ),
 
 /*
- * Base Layer: Dvorak
+ * Base Layer: GAMING
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
  * |  Tab   | ' "  | , <  | . >  |   P  |   Y  |                              |   F  |   G  |   C  |   R  |   L  |  Bksp  |
@@ -210,33 +222,53 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_GAMING] = LAYOUT(
-     KC_TAB  ,KC_TAB ,  KC_Q  ,  KC_W  ,   KC_E ,   KC_R ,                                         KC_T  ,   KC_Y ,  KC_U ,   KC_I ,  KC_O , KC_P,
-     CTL_ESC ,CTL_ESC,  KC_A  ,  KC_S  ,   KC_D ,   KC_F ,                                         KC_G  ,   KC_H ,  KC_J ,   KC_K ,  KC_L , KC_SCLN,
+     KC_ESC  ,KC_TAB ,  KC_Q  ,  KC_W  ,   KC_E ,   KC_R ,                                         KC_T  ,   KC_Y ,  KC_U ,   KC_I ,  KC_O , KC_P,
+     CTL_ESC ,KC_LCTL,  KC_A  ,  KC_S  ,   KC_D ,   KC_F ,                                         KC_G  ,   KC_H ,  KC_J ,   KC_K ,  KC_L , KC_SCLN,
      KC_LSFT ,KC_LSFT,  KC_Z  ,  KC_X  ,   KC_C ,   KC_V , KC_LBRC,KC_CAPS,     FKEYS  , KC_RBRC,  KC_B  ,   KC_N ,  KC_M , KC_COMM, KC_DOT, KC_SLSH,
                                  ADJUST, KC_LGUI, ALT_ENT, KC_SPC , NAV   ,     ENT_SYM,BSPC_NUM,DEL_FUNC, KC_RGUI, KC_APP
     ),
 
 /*
- * Base Layer: Colemak DH
+ * Symbol layer
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
- * |  Tab   |   Q  |   W  |   F  |   P  |   B  |                              |   J  |   L  |   U  |   Y  | ;  : |  Bksp  |
+ * |        |      |      |      |      |      |                              |      |  _   |  <   |  >   |  =   |  BSPC  |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |Ctrl/Esc|   A  |   R  |   S  |   T  |   G  |                              |   M  |   N  |   E  |   I  |   O  |Ctrl/' "|
+ * |        |   ^  |  &   |  @   |  $   |      |                              |      |  /   |  (   |  )   |  \   | Enter  |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * | LShift |   Z  |   X  |   C  |   D  |   V  | [ {  |CapsLk|  |F-keys|  ] } |   K  |   H  | ,  < | . >  | /  ? | RShift |
+ * |        |   ~  |  !   |  ?   |      |      |      |      |  |      |      |      |  {   |  [   |  ]   |  }   |  NAV2  |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
- *                        |Adjust| LGUI | LAlt/| Space| Nav  |  | Sym  | Space| AltGr| RGUI | Menu |
- *                        |      |      | Enter|      |      |  |      |      |      |      |      |
+ *                        |      |      |      |      |      |  |      |      |      |      |      |
+ *                        |      |      |      |ikzei |      |  |      | NUM2 |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
-    [_COLEMAK_DH] = LAYOUT(
-     KC_TAB  , KC_Q ,  KC_W   ,  KC_F  ,   KC_P ,   KC_B ,                                        KC_J,   KC_L ,  KC_U ,   KC_Y ,KC_SCLN, KC_BSPC,
-     CTL_ESC , KC_A ,  KC_R   ,  KC_S  ,   KC_T ,   KC_G ,                                        KC_M,   KC_N ,  KC_E ,   KC_I ,  KC_O , CTL_QUOT,
-     KC_LSFT , KC_Z ,  KC_X   ,  KC_C  ,   KC_D ,   KC_V , KC_LBRC,KC_CAPS,     FKEYS  , KC_RBRC, KC_K,   KC_H ,KC_COMM, KC_DOT ,KC_SLSH, KC_RSFT,
-                                 ADJUST, KC_LGUI, ALT_ENT, KC_SPC , NAV   ,     SYM    , KC_SPC ,KC_RALT, KC_RGUI, KC_APP
+    [_SYM2] = LAYOUT(
+      _______, ________, _______, _______, _______, _______,                                     _______, KC_UNDS,  KC_LT ,  KC_RT , KC_EQL , KC_BSPC,
+      _______, TD_CIRC , KC_AMPR,  KC_AT , KC_DLR , _______,                                     _______, KC_SLSH, KC_LPRN, KC_RPRN, KC_BSLS, KC_ENT ,
+      _______, TD_TILDE, KC_EXLM, KC_QUES, _______, _______, _______, _______, _______, _______, _______, KC_LCBR, KC_LBRC, KC_RBRC, KC_RCBR,   NAV2 ,
+                                  _______, _______, _______, IKZEI_B, _______, _______,   NUM2 , _______, _______, _______
     ),
 
+/*
+ * Numpad layer
+ *
+ * ,-------------------------------------------.                              ,-------------------------------------------.
+ * |        |      |      |      |      |      |                              |NumLck|  7   |  8   |  9   |  -   |   /    |
+ * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
+ * |        |      |      |      |      |      |                              |      |  4   |  5   |  6   |  +   |   *    |
+ * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
+ * |        |      |      |      |      |      |      |      |  |      |      |      |  1   |  2   |  3   | Enter|   =    |
+ * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
+ *                        |      |      |      |      |      |  |      |      |      |      |      |
+ *                        |      |      |      |ikzei | LSFT |  |      |   0  |   .  |      |      |
+ *                        `----------------------------------'  `----------------------------------'
+ */
+    [_NUMPAD] = LAYOUT(
+      _______, ________, _______, _______, _______, _______,                                     KC_NUM ,  KC_P7 ,  KC_P8 ,  KC_P9 , KC_PMNS, KC_PSLS,
+      _______, KC_MPRV , KC_MSTP, KC_MPLY, KC_MNXT, _______,                                     _______,  KC_P4 ,  KC_P5 ,  KC_P6 , KC_PPLS, KC_PAST,
+      _______, KC_HOME , KC_PGDN, KC_PGUP, KC_END , _______, _______, _______, _______, _______, _______,  KC_P1 ,  KC_P2 ,  KC_P3 , KC_PENT, KC_PEQL,
+                                  _______, _______, KC_MUTE, IKZEI_B, OS_LSFT, _______,  KC_P0 , KC_PDOT, _______, _______
+    ),
 /*
  * Nav Layer: Media, navigation
  *
@@ -303,11 +335,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * Num Layer: Numbers
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
- * |    `   |  1   |  2   |  3   |  4   |  5   |                              |   6  |  7   |  8   |  9   |  0   |   =    |
+ * |        |  [   |  7   |  8   |  9   |  ]   |                              |      |      |      |      |      |        |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |    ~   |  !   |  @   |  #   |  $   |  %   |                              |   ^  |  &   |  *   |  (   |  )   |   +    |
+ * |        |  ;   |  4   |  5   |  6   |  =   |                              |      | LSFT | CTRL |  ALT |  GUI |        |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * |    |   |   \  |  :   |  ;   |  -   |  [   |  {   |      |  |      |   }  |   ]  |  _   |  ,   |  .   |  /   |   ?    |
+ * |        |  `   |  4   |  2   |  3   |  \   |  {   |      |  |      |   }  |      |      |      |      |      |        |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
  *                        |      |      |      |      |      |  |      |      |      |      |      |
  *                        |      |      |      |      |      |  |      |      |      |      |      |
@@ -325,14 +357,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * Sym Layer: Numbers and symbols
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
- * |    `   |  1   |  2   |  3   |  4   |  5   |                              |   6  |  7   |  8   |  9   |  0   |   =    |
+ * |        |  {   |  &   |  *   |  (   |  }   |                              |      |      |      |      |      |        |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |    ~   |  !   |  @   |  #   |  $   |  %   |                              |   ^  |  &   |  *   |  (   |  )   |   +    |
+ * |        |  :   |  $   |  %   |  ^   |  +   |                              |      | Shift| Ctrl |  Alt |  GUI |        |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * |    |   |   \  |  :   |  ;   |  -   |  [   |  {   |      |  |      |   }  |   ]  |  _   |  ,   |  .   |  /   |   ?    |
+ * |        |  ~   |  !   |  @   |  #   |  |   |  {   |      |  |      |   }  |      |      |      |      |      |        |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
  *                        |      |      |      |      |      |  |      |      |      |      |      |
- *                        |      |      |      |      |      |  |      |      |      |      |      |
+ *                        |      |      |  (   |  )   |  _   |  |      |      |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
     [_SYM] = LAYOUT(
@@ -369,7 +401,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-------------------------------------------.                              ,-------------------------------------------.
  * |        |      |      |QWERTY|      |      |                              |      |      |      |      |      |        |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |        |      |      |Dvorak|      |      |                              | TOG  | SAI  | HUI  | VAI  | MOD  |        |
+ * |        |      |      |GAMING|      |      |                              | TOG  | SAI  | HUI  | VAI  | MOD  |        |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
  * |        |      |      |Colmak|      |      |      |      |  |      |      |      | SAD  | HUD  | VAD  | RMOD |        |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
@@ -378,8 +410,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_ADJUST] = LAYOUT(
-      _______, _______, _______, QWERTY ,  _______ , _______,                                    _______, _______, _______, _______,  _______, _______,
-      _______, _______, _______, DVORAK , FULL_MAKS, _______,                                    RGB_TOG, RGB_SAI, RGB_HUI, RGB_VAI,  RGB_MOD, _______,
+      _______, _______, _______, QWERTY ,   IKZEI  , _______,                                    _______, _______, _______, _______,  _______, _______,
+      _______, _______, _______, GAMING , FULL_MAKS, _______,                                    RGB_TOG, RGB_SAI, RGB_HUI, RGB_VAI,  RGB_MOD, _______,
       _______, _______, _______, COLEMAK,  _______ , _______,_______, _______, _______, _______, _______, RGB_SAD, RGB_HUD, RGB_VAD, RGB_RMOD, _______,
                                  _______,  _______ , _______,_______, _______, _______, _______, _______, _______, _______
     ),
@@ -405,6 +437,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //                                  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
 //     ),
 };
+
+uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
+    if ((mods & MOD_MASK_CTRL)) {  // Was Ctrl held?
+        switch (keycode) {
+            case KC_Y: return C(KC_Z);  // Ctrl + Y reverses to Ctrl + Z.
+            case KC_Z: return C(KC_Y);  // Ctrl + Z reverses to Ctrl + Y.
+        }
+    }
+
+    return KC_TRNS;  // Defer to default definitions.
+}
 
 /* The default OLED and rotary encoder code can be found at the bottom of qmk_firmware/keyboards/splitkb/kyria/rev1/rev1.c
  * These default settings can be overriden by your own settings in your keymap.c
@@ -444,6 +487,9 @@ bool oled_task_user(void) {
             case _COLEMAK_DH:
                 oled_write_P(PSTR("Colemak-DH\n"), false);
                 break;
+            case _IKZEI:
+                oled_write_P(PSTR("ikzei\n"), false);
+                break;
             case _NAV:
                 oled_write_P(PSTR("Nav\n"), false);
                 break;
@@ -464,6 +510,15 @@ bool oled_task_user(void) {
                 break;
             case _NUM:
                 oled_write_P(PSTR("Num\n"), false);
+                break;
+            case _SYM2:
+                oled_write_P(PSTR("Symbols\n"), false);
+                break;
+            case _NUMPAD:
+                oled_write_P(PSTR("Numpad\n"), false);
+                break;
+            case _FUNCTION2:
+                oled_write_P(PSTR("F-keys\n"), false);
                 break;
             default:
                 oled_write_P(PSTR("Undefined\n"), false);
