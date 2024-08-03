@@ -174,7 +174,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
     [_IKZEI] = LAYOUT(
       OS_LALT, KC_SCLN,  KC_H  ,TD_QUOTE, KC_DOT , KC_COMM,                                        KC_B  ,  KC_V  ,  KC_L  ,  KC_G  ,  KC_J  , KC_BSPC,
-      KC_TAB , MGUI_A , MALT_S , MCTRL_E, MSHFT_I,  KC_X  ,                                        KC_P  , MSHFT_D, MCTRL_N, MALT_T , MGUI_R , KC_ENT ,
+      KC_TAB ,  KC_A ,   KC_S  ,  KC_E  ,  KC_I  ,  KC_X  ,                                        KC_P  ,  KC_D  ,  KC_N  ,  KC_T  ,  KC_R , KC_ENT ,
       OS_LCTL,  KC_U  ,  KC_F  ,  KC_Y  ,  KC_O  ,  KC_Q  , KC_CAPS, OS_LGUI,   OS_LALT, KC_BSLS,  KC_Z  ,  KC_K  ,  KC_W  ,  KC_M  ,  KC_C  , XXXXXXX,
                                  ADJUST , BUTTON , ESC_MED, KC_SPC , OS_LSFT,   OS_LCTL,  SYM   ,DEL_FUNC,APP_MENU, KC_RALT
     ),
@@ -284,12 +284,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        |      |      |      |      |      |  |      |      |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
-    [_MOUSE] = LAYOUT(
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                        KC_REDO,   KC_PSTE   ,   KC_COPY   ,  KC_CUT   ,   KC_UNDO    ,KC_REDO_Y,
-      XXXXXXX, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,                                        XXXXXXX, KC_MS_LEFT  , KC_MS_DOWN  , KC_MS_UP  , KC_MS_RIGHT  , XXXXXXX ,
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX,KC_MS_WH_LEFT,KC_MS_WH_DOWN,KC_MS_WH_UP,KC_MS_WH_RIGHT, XXXXXXX ,
-                                 XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,    KC_BTN3, KC_BTN1, KC_BTN2,   KC_BTN4   ,    KC_BTN5
-    ),
+    /*[_MOUSE] = LAYOUT(*/
+    /*  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                        KC_REDO,   KC_PSTE   ,   KC_COPY   ,  KC_CUT   ,   KC_UNDO    ,KC_REDO_Y,*/
+    /*  XXXXXXX, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,                                        XXXXXXX, KC_MS_LEFT  , KC_MS_DOWN  , KC_MS_UP  , KC_MS_RIGHT  , XXXXXXX ,*/
+    /*  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX,KC_MS_WH_LEFT,KC_MS_WH_DOWN,KC_MS_WH_UP,KC_MS_WH_RIGHT, XXXXXXX ,*/
+    /*                             XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,    KC_BTN3, KC_BTN1, KC_BTN2,   KC_BTN4   ,    KC_BTN5*/
+    /*),*/
 
 /*
  * Media Layer
@@ -304,12 +304,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        |      |      |      |      |      |  |      |      |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
-    [_MEDIA] = LAYOUT(
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                      KC_REDO, KC_PSTE, KC_COPY, KC_CUT , KC_UNDO,KC_REDO_Y,
-      XXXXXXX, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,                                      XXXXXXX, KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT,XXXXXXX  ,
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, KC_HOME, KC_PGDN, KC_PGUP, KC_END ,XXXXXXX  ,
-                                 XXXXXXX, XXXXXXX, _______, XXXXXXX, XXXXXXX,  KC_MSTP, KC_MPLY, KC_MUTE, XXXXXXX, XXXXXXX
-    ),
+    /*[_MEDIA] = LAYOUT(*/
+      /*XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                      KC_REDO, KC_PSTE, KC_COPY, KC_CUT , KC_UNDO,KC_REDO_Y,*/
+      /*XXXXXXX, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,                                      XXXXXXX, KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT,XXXXXXX  ,*/
+      /*XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, KC_HOME, KC_PGDN, KC_PGUP, KC_END ,XXXXXXX  ,*/
+                                 /*XXXXXXX, XXXXXXX, _______, XXXXXXX, XXXXXXX,  KC_MSTP, KC_MPLY, KC_MUTE, XXXXXXX, XXXXXXX*/
+    /*),*/
 
 /*
  * Num Layer: Numbers
@@ -348,7 +348,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_SYM] = LAYOUT(
-      XXXXXXX, KC_LCBR, KC_AMPR, KC_ASTR, KC_LPRN, KC_RCBR,                                      XXXXXXX, KC_MINS,  KC_LT ,  KC_GT , KC_EQL , KC_BSPC,
+      XXXXXXX, KC_LCBR, KC_AMPR, KC_ASTR, KC_LPRN, KC_RCBR,                                      KC_MINS, KC_UNDS,  KC_LT ,  KC_GT , KC_EQL , KC_BSPC,
       XXXXXXX, KC_COLN, KC_DLR , KC_PERC, TD_CIRC, KC_PLUS,                                      XXXXXXX, KC_SLSH, KC_LPRN, KC_RPRN, KC_BSLS, KC_ENT ,
       XXXXXXX,TD_TILDE, KC_EXLM,  KC_AT , KC_HASH, KC_PIPE, KC_LCBR, OS_LGUI,  OS_LALT, XXXXXXX, XXXXXXX, KC_LCBR, KC_LBRC, KC_RBRC, KC_RCBR,   NAV  ,
                                  XXXXXXX, XXXXXXX, XXXXXXX, LY_HOME, OS_LSFT,  OS_LCTL,   NUM  , XXXXXXX, XXXXXXX, XXXXXXX
