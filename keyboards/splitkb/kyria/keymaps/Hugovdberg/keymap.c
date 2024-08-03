@@ -16,9 +16,8 @@
 #include QMK_KEYBOARD_H
 
 enum layers {
-    _FULL_MAKS = 0,
+    _IKZEI = 0,
     _GAMING,
-    _IKZEI,
     _NAV,
     _SYM,
     _FUNCTION,
@@ -55,10 +54,6 @@ typedef enum {
     TD_TRIPLE_TAP,
     TD_TRIPLE_HOLD
 } td_state_t;
-
-// enum custom_keycodes {
-//     APOSTROPHE = SAFE_RANGE,
-// };
 
 
 // Aliases for readability
@@ -197,14 +192,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |   Gui  |   u  |   f  |   y  |   o  |   q  |      |CapsLk|  |      |      |   z  |   k  |   w   |   m  |   c  |        |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+-------+----------------------'
  *                        | VOL/ |      |      |      |      |  |      |      |      |      |PGUPDN/|
- *                        |ADJUST| BUTN |  REP | SPC  | LSFT |  | RCTL |  L2  | AREP |      |  MENU |
+ *                        |ADJUST| BUTN |  REP | SPC  | LSFT |  | RCTL | SYM2 | AREP |      |  MENU |
  *                        `----------------------------------'  `-----------------------------------'
  */
     [_IKZEI] = LAYOUT(
-    KC_ESCAPE, KC_SCLN,  KC_H  ,TD_QUOTE, KC_DOT , KC_COMM,                                      KC_B  ,  KC_V  ,  KC_L  ,  KC_G  ,  KC_J  , KC_BSPC,
-      OS_LALT,  KC_A  ,  KC_S  ,  KC_E  ,  KC_I ,   KC_X  ,                                      KC_P  ,  KC_D  ,  KC_N  ,  KC_T  ,  KC_R  , KC_ENT,
-      OS_LGUI,  KC_U  ,  KC_F  ,  KC_Y  ,  KC_O  ,  KC_Q  , XXXXXXX, KC_CAPS, XXXXXXX, XXXXXXX,  KC_Z  ,  KC_K  ,  KC_W  ,  KC_M  ,  KC_C  , XXXXXXX,
-                                 ADJUST , BUTTON , QK_REP , KC_SPC , OS_LSFT, OS_RCTL,  SYM2  , QK_AREP, KC_APP ,  HOME
+    KC_ESCAPE, KC_SCLN,  KC_H  ,TD_QUOTE, KC_DOT , KC_COMM,                                       KC_B  ,  KC_V  ,  KC_L  ,  KC_G  ,  KC_J  , KC_BSPC,
+      OS_LALT,  KC_A  ,  KC_S  ,  KC_E  ,  KC_I ,   KC_X  ,                                       KC_P  ,  KC_D  ,  KC_N  ,  KC_T  ,  KC_R  , KC_ENT,
+      OS_LGUI,  KC_U  ,  KC_F  ,  KC_Y  ,  KC_O  ,  KC_Q  , XXXXXXX, KC_CAPS,  XXXXXXX, XXXXXXX,  KC_Z  ,  KC_K  ,  KC_W  ,  KC_M  ,  KC_C  , XXXXXXX,
+                                 ADJUST , BUTTON , QK_REP , KC_SPC , OS_LSFT,  OS_RCTL,  SYM2  , QK_AREP, KC_APP ,  HOME
     ),
 
 /*
@@ -222,10 +217,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_GAMING] = LAYOUT(
-     KC_ESC  ,KC_TAB ,  KC_Q  ,  KC_W  ,   KC_E ,   KC_R ,                                         KC_T  ,   KC_Y ,  KC_U ,   KC_I ,  KC_O , KC_P,
-     CTL_ESC ,KC_LCTL,  KC_A  ,  KC_S  ,   KC_D ,   KC_F ,                                         KC_G  ,   KC_H ,  KC_J ,   KC_K ,  KC_L , KC_SCLN,
-     KC_LSFT ,KC_LSFT,  KC_Z  ,  KC_X  ,   KC_C ,   KC_V , KC_LBRC,KC_CAPS,     FKEYS  , KC_RBRC,  KC_B  ,   KC_N ,  KC_M , KC_COMM, KC_DOT, KC_SLSH,
-                                 ADJUST, KC_LGUI, ALT_ENT, KC_SPC , NAV   ,     ENT_SYM,BSPC_NUM,DEL_FUNC, KC_RGUI, KC_APP
+     KC_ESC  ,KC_TAB ,  KC_Q  ,  KC_W  ,   KC_E ,   KC_R ,                                        KC_T  ,   KC_Y ,  KC_U ,   KC_I ,  KC_O , KC_P,
+     CTL_ESC ,KC_LCTL,  KC_A  ,  KC_S  ,   KC_D ,   KC_F ,                                        KC_G  ,   KC_H ,  KC_J ,   KC_K ,  KC_L , KC_SCLN,
+     KC_LSFT ,KC_LSFT,  KC_Z  ,  KC_X  ,   KC_C ,   KC_V , KC_LBRC,KC_CAPS,    FKEYS  , KC_RBRC,  KC_B  ,   KC_N ,  KC_M , KC_COMM, KC_DOT, KC_SLSH,
+                                 ADJUST, KC_LGUI, ALT_ENT, KC_SPC , NAV   ,    ENT_SYM,BSPC_NUM,DEL_FUNC, KC_RGUI, KC_APP
     ),
 
 /*
