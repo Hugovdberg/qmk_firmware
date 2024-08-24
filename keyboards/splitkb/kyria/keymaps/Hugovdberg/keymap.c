@@ -19,7 +19,6 @@ enum layers {
     _IKZEI = 0,
     _GAMING,
     _NAV,
-    _MOUSE,
     _BUTTON,
     _MEDIA,
     _NUM,
@@ -54,11 +53,10 @@ typedef enum {
 
 #define LY_HOME   TO(0)
 #define NAV       TO(_NAV)
-#define MOUSE     MO(_MOUSE)
-#define BUTTON    TO(_BUTTON)
+#define BUTTON    OSL(_BUTTON)
 #define MEDIA     MO(_MEDIA)
-#define NUM       TO(_NUM)
-#define SYM       TO(_SYM)
+#define NUM       OSL(_NUM)
+#define SYM       OSL(_SYM)
 #define FKEYS     MO(_FUNCTION)
 #define ADJUST    MO(_ADJUST)
 
@@ -97,7 +95,6 @@ typedef enum {
 
 #define ESC_MED   LT(_MEDIA, KC_ESC)
 #define SPC_NAV   LT(_NAV, KC_SPC)
-#define TAB_MOUSE LT(_MOUSE, KC_TAB)
 
 #define ENT_SYM   LT(_SYM, KC_ENT)
 #define BSPC_NUM  LT(_NUM, KC_BSPC)
@@ -201,47 +198,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 /*
- * Symbol layer
- *
- * ,-------------------------------------------.                              ,-------------------------------------------.
- * |        |      |      |      |      |      |                              |      |  _   |  <   |  >   |  =   |  BSPC  |
- * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |        |   ^  |  &   |  @   |  $   |      |                              |      |  /   |  (   |  )   |  \   | Enter  |
- * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * |        |   ~  |  !   |  ?   |      |      |      |      |  |      |      |      |  {   |  [   |  ]   |  }   |  NAV2  |
- * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
- *                        |      |      |      |      |      |  |      |      |      |      |      |
- *                        |      |      |      |ikzei |      |  |      | NUM2 |      |      |      |
- *                        `----------------------------------'  `----------------------------------'
- */
-    /*[_SYM2] = LAYOUT(*/
-    /*  _______, ________, _______, _______, _______, _______,                                     _______, KC_UNDS,  KC_LT ,  KC_RT , KC_EQL , KC_BSPC,*/
-    /*  _______, TD_CIRC , KC_AMPR,  KC_AT , KC_DLR , _______,                                     _______, KC_SLSH, KC_LPRN, KC_RPRN, KC_BSLS, KC_ENT ,*/
-    /*  _______, TD_TILDE, KC_EXLM, KC_QUES, _______, _______, _______, _______, _______, _______, _______, KC_LCBR, KC_LBRC, KC_RBRC, KC_RCBR,   NAV2 ,*/
-    /*                              _______, _______, _______, IKZEI_B, _______, _______,   NUM2 , _______, _______, _______*/
-    /*),*/
-
-/*
- * Numpad layer
- *
- * ,-------------------------------------------.                              ,-------------------------------------------.
- * |        |      |      |      |      |      |                              |NumLck|  7   |  8   |  9   |  -   |   /    |
- * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |        |      |      |      |      |      |                              |      |  4   |  5   |  6   |  +   |   *    |
- * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * |        |      |      |      |      |      |      |      |  |      |      |      |  1   |  2   |  3   | Enter|   =    |
- * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
- *                        |      |      |      |      |      |  |      |      |      |      |      |
- *                        |      |      |      |ikzei | LSFT |  |      |   0  |   .  |      |      |
- *                        `----------------------------------'  `----------------------------------'
- */
-    /*[_NUMPAD] = LAYOUT(*/
-    /*  _______, ________, _______, _______, _______, _______,                                     KC_NUM ,  KC_P7 ,  KC_P8 ,  KC_P9 , KC_PMNS, KC_PSLS,*/
-    /*  _______, KC_MPRV , KC_MSTP, KC_MPLY, KC_MNXT, _______,                                     _______,  KC_P4 ,  KC_P5 ,  KC_P6 , KC_PPLS, KC_PAST,*/
-    /*  _______, KC_HOME , KC_PGDN, KC_PGUP, KC_END , _______, _______, _______, _______, _______, _______,  KC_P1 ,  KC_P2 ,  KC_P3 , KC_PENT, KC_PEQL,*/
-    /*                              _______, _______, KC_MUTE, IKZEI_B, OS_LSFT, _______,  KC_P0 , KC_PDOT, _______, _______*/
-    /*),*/
-/*
  * Nav Layer: Media, navigation
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
@@ -262,35 +218,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                             XXXXXXX ,  XXXXXXX  ,   XXXXXXX    , LY_HOME, OS_LSFT,     OS_LCTL, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
     ),
 
-    /**/
-    /*[_NAV] = LAYOUT(*/
-    /*  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                     KC_REDO, KC_PSTE, KC_COPY, KC_CUT , KC_UNDO,  KC_REDO_Y,*/
-    /*  XXXXXXX, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,                                     KC_CAPS, KC_LEFT, KC_DOWN,  KC_UP , KC_RGHT,  XXXXXXX ,*/
-    /*  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_SCRL, XXXXXXX, XXXXXXX, KC_INS , KC_HOME, KC_PGDN, KC_PGUP, KC_END , KC_PSCR,*/
-    /*                             XXXXXXX, XXXXXXX, XXXXXXX, _______, XXXXXXX, _______, _______, _______, KC_SCRL, _______*/
-    /*),*/
-    /**/
-/*
- * Nav Layer: Mouse
- *
- * ,-------------------------------------------.                              ,-------------------------------------------.
- * |        |      |      |      |      |      |                              | PgUp | Home |   ↑  | End  | VolUp| Delete |
- * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |        |  GUI |  Alt | Ctrl | Shift|      |                              | PgDn |  ←   |   ↓  |   →  | VolDn| Insert |
- * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * |        |      |      |      |      |      |      |ScLck |  |      |      | Pause|M Prev|M Play|M Next|VolMut| PrtSc  |
- * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
- *                        |      |      |      |      |      |  |      |      |      |      |      |
- *                        |      |      |      |      |      |  |      |      |      |      |      |
- *                        `----------------------------------'  `----------------------------------'
- */
-    /*[_MOUSE] = LAYOUT(*/
-    /*  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                        KC_REDO,   KC_PSTE   ,   KC_COPY   ,  KC_CUT   ,   KC_UNDO    ,KC_REDO_Y,*/
-    /*  XXXXXXX, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,                                        XXXXXXX, KC_MS_LEFT  , KC_MS_DOWN  , KC_MS_UP  , KC_MS_RIGHT  , XXXXXXX ,*/
-    /*  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX,KC_MS_WH_LEFT,KC_MS_WH_DOWN,KC_MS_WH_UP,KC_MS_WH_RIGHT, XXXXXXX ,*/
-    /*                             XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,    KC_BTN3, KC_BTN1, KC_BTN2,   KC_BTN4   ,    KC_BTN5*/
-    /*),*/
-
 /*
  * Media Layer
  *
@@ -304,12 +231,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        |      |      |      |      |      |  |      |      |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
-    /*[_MEDIA] = LAYOUT(*/
-      /*XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                      KC_REDO, KC_PSTE, KC_COPY, KC_CUT , KC_UNDO,KC_REDO_Y,*/
-      /*XXXXXXX, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,                                      XXXXXXX, KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT,XXXXXXX  ,*/
-      /*XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, KC_HOME, KC_PGDN, KC_PGUP, KC_END ,XXXXXXX  ,*/
-                                 /*XXXXXXX, XXXXXXX, _______, XXXXXXX, XXXXXXX,  KC_MSTP, KC_MPLY, KC_MUTE, XXXXXXX, XXXXXXX*/
-    /*),*/
+    [_MEDIA] = LAYOUT(
+      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                      KC_REDO, KC_PSTE, KC_COPY, KC_CUT , KC_UNDO,KC_REDO_Y,
+      XXXXXXX, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,                                      XXXXXXX, KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT,XXXXXXX  ,
+      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, KC_HOME, KC_PGDN, KC_PGUP, KC_END ,XXXXXXX  ,
+                                 XXXXXXX, XXXXXXX, _______, XXXXXXX, XXXXXXX,  KC_MSTP, KC_MPLY, KC_MUTE, XXXXXXX, XXXXXXX
+    ),
 
 /*
  * Num Layer: Numbers
@@ -327,9 +254,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
     [_NUM] = LAYOUT(
       XXXXXXX, KC_LBRC,  KC_7  ,  KC_8  ,  KC_9  , KC_RBRC,                                      KC_NUM ,  KC_P7 ,  KC_P8 ,  KC_P9 , KC_PMNS, KC_PSLS,
-      XXXXXXX, KC_SCLN,  KC_4  ,  KC_5  ,  KC_6  , KC_EQL ,                                      XXXXXXX,  KC_P4 ,  KC_P5 ,  KC_P6 , KC_PPLS, KC_PAST,
+      XXXXXXX, KC_SCLN,  KC_4  ,  KC_5  ,  KC_6  , KC_EQL ,                                     TO(_NUM),  KC_P4 ,  KC_P5 ,  KC_P6 , KC_PPLS, KC_PAST,
       XXXXXXX,TD_GRAVE,  KC_1  ,  KC_2  ,  KC_3  , KC_NUBS, KC_LCBR, OS_LGUI,  OS_LALT, KC_RCBR,KC_GRAVE,  KC_P1 ,  KC_P2 ,  KC_P3 , KC_PENT, KC_PEQL,
-                                 XXXXXXX, XXXXXXX, KC_DOT , LY_HOME, OS_LSFT,  OS_LCTL,  KC_P0,  KC_PDOT, KC_PCMM, XXXXXXX
+                                 XXXXXXX, XXXXXXX, KC_DOT , LY_HOME, OS_LSFT,  OS_LCTL, _______, KC_P0,  KC_PDOT, KC_PCMM
     ),
 
 
@@ -396,6 +323,26 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                  _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
     ),
 
+/*
+ * Layer template
+ *
+ * ,-------------------------------------------.                              ,-------------------------------------------.
+ * |        |      |      |      |      |      |                              |      |      |      |      |      |        |
+ * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
+ * |        |      |      |      |      |      |                              |      |      |      |      |      |        |
+ * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
+ * |        |      |      |      |      |      |      |      |  |      |      |      |      |      |      |      |        |
+ * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
+ *                        |      |      |      |      |      |  |      |      |      |      |      |
+ *                        |      |      |      |      |      |  |      |      |      |      |      |
+ *                        `----------------------------------'  `----------------------------------'
+ */
+    [_BUTTON] = LAYOUT(
+      KC_REDO_Y, KC_UNDO, KC_CUT , KC_COPY,KC_PASTE, KC_REDO,                                     KC_REDO,KC_PASTE, KC_COPY, KC_CUT , KC_UNDO,KC_REDO_Y,
+       _______ , KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, _______,                                     _______, KC_LSFT, KC_LCTL, KC_LALT, KC_LGUI, _______,
+       LY_HOME , KC_UNDO, KC_CUT , KC_COPY,KC_PASTE, KC_REDO,                                     KC_REDO,KC_PASTE, KC_COPY, KC_CUT , KC_UNDO,KC_REDO_Y,
+                                   _______, _______, KC_BTN3, KC_BTN1, KC_BTN2, KC_BTN2, KC_BTN1, KC_BTN3, _______, _______
+    ),
 // /*
 //  * Layer template
 //  *
@@ -476,11 +423,11 @@ bool oled_task_user(void) {
             case _MEDIA:
                 oled_write_P(PSTR("Media\n"), false);
                 break;
-            case _MOUSE:
-                oled_write_P(PSTR("Mouse\n"), false);
-                break;
             case _NUM:
                 oled_write_P(PSTR("Num\n"), false);
+                break;
+            case _BUTTON:
+                oled_write_P(PSTR("Button\n"), false);
                 break;
             default:
                 oled_write_P(PSTR("Undefined\n"), false);
